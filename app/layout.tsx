@@ -1,15 +1,58 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Instrument_Serif,
+  Outfit,
+  Inter,
+  Source_Code_Pro,
+  Karla,
+  Limelight,
+  Manufacturing_Consent,
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-instrument-serif",
+  style: "normal",
+  preload: true,
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+  preload: true,
+});
+
+const sourceCodePro = Source_Code_Pro({
+  subsets: ["latin"],
+  variable: "--font-source-code-pro",
+  preload: true,
+});
+
+const karla = Karla({
+  subsets: ["latin"],
+  variable: "--font-karla",
+  preload: true,
+});
+
+const limelight = Limelight({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-limelight",
+  preload: true,
+});
+
+const manufacturingConsent = Manufacturing_Consent({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-manufacturing-consent",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -25,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${outfit.variable} ${inter.variable} ${sourceCodePro.variable} ${karla.variable} ${limelight.variable} ${manufacturingConsent.variable} antialiased`}
       >
         {children}
       </body>

@@ -3,24 +3,67 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --light: #ffffff;
+  --dark: #0f0f0f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* Custom font utilities */
+.font-instrument-serif {
+  font-family: var(--font-instrument-serif), serif;
+}
+.font-outfit {
+  font-family: var(--font-outfit), sans-serif;
+}
+.font-inter {
+  font-family: var(--font-inter), sans-serif;
+}
+.font-source-code-pro {
+  font-family: var(--font-source-code-pro), monospace;
+}
+.font-karla {
+  font-family: var(--font-karla), sans-serif;
+}
+.font-limelight {
+  font-family: var(--font-limelight);
+}
+.font-manufacturing-consent {
+  font-family: var(--font-manufacturing-consent), sans-serif;
+}
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.hero-header h1 {
+  visibility: hidden;
+}
+
+.hero-header h1 .word {
+  visibility: visible;
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+/* Bento grid text animation */
+.bento-text {
+  visibility: hidden;
+}
+
+.bento-text .bento-word {
+  visibility: visible;
+  transform: translateY(100%);
+  will-change: transform;
 }
