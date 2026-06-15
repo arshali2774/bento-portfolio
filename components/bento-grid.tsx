@@ -257,34 +257,43 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               if (el) cardRefs.current[1] = el;
             }}
           >
-            <span className="nav-link">
-              <span
-                className="bento-text text-[var(--theme-text)] text-2xl"
-                ref={(el) => {
-                  if (el) textRefs.current[1] = el;
-                }}
-              >
-                Home
+            <span className="nav-link group">
+              <span className="relative inline-block">
+                <span
+                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  ref={(el) => {
+                    if (el) textRefs.current[1] = el;
+                  }}
+                >
+                  Home
+                </span>
+                <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </span>
             </span>
-            <span className="nav-link">
-              <span
-                className="bento-text text-[var(--theme-text)] text-2xl"
-                ref={(el) => {
-                  if (el) textRefs.current[2] = el;
-                }}
-              >
-                About
+            <span className="nav-link group">
+              <span className="relative inline-block">
+                <span
+                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  ref={(el) => {
+                    if (el) textRefs.current[2] = el;
+                  }}
+                >
+                  About
+                </span>
+                <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </span>
             </span>
-            <span className="nav-link">
-              <span
-                className="bento-text text-[var(--theme-text)] text-2xl"
-                ref={(el) => {
-                  if (el) textRefs.current[3] = el;
-                }}
-              >
-                Work
+            <span className="nav-link group">
+              <span className="relative inline-block">
+                <span
+                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  ref={(el) => {
+                    if (el) textRefs.current[3] = el;
+                  }}
+                >
+                  Work
+                </span>
+                <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </span>
             </span>
           </div>
@@ -308,18 +317,22 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                 animated &&
                   "col-start-9 col-span-3 row-span-1 flex items-center justify-center",
                 !animated && "px-6 flex items-center",
+                "group",
               )}
               ref={(el) => {
                 if (el) cardRefs.current[2] = el;
               }}
             >
-              <span
-                className="bento-text text-[var(--theme-text)] text-2xl"
-                ref={(el) => {
-                  if (el) textRefs.current[4] = el;
-                }}
-              >
-                Wanna Hire Me?
+              <span className="relative inline-block">
+                <span
+                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  ref={(el) => {
+                    if (el) textRefs.current[4] = el;
+                  }}
+                >
+                  Wanna Hire Me?
+                </span>
+                <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </span>
             </div>
 
@@ -551,44 +564,56 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               Wanna check out my projects?
             </span>
             <div className="grid grid-cols-1 gap-2 text-[var(--theme-text)] sm:grid-cols-2">
-              <div className="project-item cursor-pointer">
-                <span
-                  className="bento-text text-3xl font-instrument-serif"
-                  ref={(el) => {
-                    if (el) textRefs.current[15] = el;
-                  }}
-                >
-                  Project 1
+              <div className="project-item cursor-pointer group">
+                <span className="relative inline-block">
+                  <span
+                    className="bento-text text-3xl font-instrument-serif"
+                    ref={(el) => {
+                      if (el) textRefs.current[15] = el;
+                    }}
+                  >
+                    Project 1
+                  </span>
+                  <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
               </div>
-              <div className="project-item cursor-pointer">
-                <span
-                  className="bento-text text-3xl font-instrument-serif"
-                  ref={(el) => {
-                    if (el) textRefs.current[16] = el;
-                  }}
-                >
-                  Project 1
+              <div className="project-item cursor-pointer group">
+                <span className="relative inline-block">
+                  <span
+                    className="bento-text text-3xl font-instrument-serif"
+                    ref={(el) => {
+                      if (el) textRefs.current[16] = el;
+                    }}
+                  >
+                    Project 1
+                  </span>
+                  <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
               </div>
-              <div className="project-item cursor-pointer">
-                <span
-                  className="bento-text text-3xl font-instrument-serif"
-                  ref={(el) => {
-                    if (el) textRefs.current[17] = el;
-                  }}
-                >
-                  Project 1
+              <div className="project-item cursor-pointer group">
+                <span className="relative inline-block">
+                  <span
+                    className="bento-text text-3xl font-instrument-serif"
+                    ref={(el) => {
+                      if (el) textRefs.current[17] = el;
+                    }}
+                  >
+                    Project 1
+                  </span>
+                  <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
               </div>
-              <div className="project-item cursor-pointer">
-                <span
-                  className="bento-text text-3xl font-instrument-serif"
-                  ref={(el) => {
-                    if (el) textRefs.current[18] = el;
-                  }}
-                >
-                  Project 1
+              <div className="project-item cursor-pointer group">
+                <span className="relative inline-block">
+                  <span
+                    className="bento-text text-3xl font-instrument-serif"
+                    ref={(el) => {
+                      if (el) textRefs.current[18] = el;
+                    }}
+                  >
+                    Project 1
+                  </span>
+                  <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
               </div>
             </div>

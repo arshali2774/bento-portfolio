@@ -284,12 +284,15 @@ function DesktopContactCard({
         >
           Looking for me
         </span>
-        <div className="flex items-center cursor-pointer" onClick={handleOpen}>
-          <span
-            className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif"
-            ref={setTextRef13}
-          >
-            Contact Me
+        <div className="flex items-center cursor-pointer group" onClick={handleOpen}>
+          <span className="relative inline-block">
+            <span
+              className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif"
+              ref={setTextRef13}
+            >
+              Contact Me
+            </span>
+            <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
           </span>
           <div className="overflow-hidden ml-1">
             <ArrowUpRight
@@ -355,9 +358,12 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
         <span className="bento-text text-[var(--theme-text)] text-2xl" ref={setTextRef12}>
           Looking for me
         </span>
-        <div className="flex items-center cursor-pointer mt-auto" onClick={openCard}>
-          <span className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif" ref={setTextRef13}>
-            Contact Me
+        <div className="flex items-center cursor-pointer mt-auto group" onClick={openCard}>
+          <span className="relative inline-block">
+            <span className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif" ref={setTextRef13}>
+              Contact Me
+            </span>
+            <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
           </span>
           <div className="overflow-hidden ml-1">
             <ArrowUpRight ref={arrowRef} className="w-8 h-8 text-[var(--theme-text)]" />
