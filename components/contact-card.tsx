@@ -3,10 +3,11 @@
 import { useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { ArrowUpRight, Mail, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa";
 import { ArrowLeft } from "@/components/animate-ui/icons/arrow-left";
+import { ArrowUpRight as ArrowUpRightAnimated } from "@/components/animate-ui/icons/arrow-up-right";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 
 gsap.registerPlugin(CustomEase);
@@ -46,7 +47,7 @@ interface ContactCardProps {
   setCardRef:   (el: HTMLDivElement | null) => void;
   setTextRef12: (el: HTMLElement | null) => void;
   setTextRef13: (el: HTMLElement | null) => void;
-  arrowRef: React.RefObject<SVGSVGElement | null>;
+  arrowRef: React.RefObject<HTMLDivElement | null>;
 }
 
 // ── Desktop ───────────────────────────────────────────────────────────────────
@@ -85,6 +86,9 @@ function DesktopContactCard({
 }: Omit<ContactCardProps, "animated">) {
   const isAnimating = useRef(false);
   const isOpen = useRef(false);
+
+  const [arrowHovered, setArrowHovered] = useState(false);
+  const [backHovered, setBackHovered] = useState(false);
 
   const wrapperRef   = useRef<HTMLDivElement>(null);
   const cardShellRef = useRef<HTMLDivElement>(null); // provides card bg/border in closed state
@@ -257,10 +261,12 @@ function DesktopContactCard({
         <div
           ref={(el) => { subCardRefs.current[4] = el; }}
           onClick={handleClose}
+          onMouseEnter={() => setBackHovered(true)}
+          onMouseLeave={() => setBackHovered(false)}
           className="col-span-2 flex items-center justify-center bg-[var(--theme-card)] cursor-pointer"
         >
           <div ref={(el) => { iconRefs.current[4] = el; }} className="flex items-center justify-center">
-            <AnimateIcon animateOnHover="pointing-loop">
+            <AnimateIcon animate={backHovered ? "pointing-loop" : false} loop={backHovered} completeOnStop>
               <ArrowLeft className="w-8 h-8 text-[var(--theme-text)]" />
             </AnimateIcon>
           </div>
@@ -284,7 +290,12 @@ function DesktopContactCard({
         >
           Looking for me
         </span>
-        <div className="flex items-center cursor-pointer group" onClick={handleOpen}>
+        <div
+          className="flex items-center cursor-pointer group"
+          onClick={handleOpen}
+          onMouseEnter={() => setArrowHovered(true)}
+          onMouseLeave={() => setArrowHovered(false)}
+        >
           <span className="relative inline-block">
             <span
               className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif"
@@ -295,13 +306,33 @@ function DesktopContactCard({
             <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
           </span>
           <div className="overflow-hidden ml-1">
-            <ArrowUpRight
-              ref={arrowRef}
-              className="w-8 h-8 text-[var(--theme-text)] translate-y-full"
-            />
+            {/* GSAP animates this div (slide-up reveal); Framer Motion animates the SVG (hover) */}
+            <div ref={arrowRef} className="translate-y-full">
+              <AnimateIcon animate={arrowHovered ? "default" : false}>
+                <ArrowUpRightAnimated className="w-6 h-6 text-[var(--theme-text)]" />
+              </AnimateIcon>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ── Mobile helpers ────────────────────────────────────────────────────────────
+
+function MobileBackCell({ cell, onClick }: { cell: string; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className={cn(cell, "col-span-2")}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <AnimateIcon animate={hovered ? "pointing-loop" : false} loop={hovered} completeOnStop>
+        <ArrowLeft className="w-5 h-5 text-[var(--theme-text)]" />
+      </AnimateIcon>
     </div>
   );
 }
@@ -312,11 +343,12 @@ interface MobileContactCardProps {
   setCardRef:   (el: HTMLDivElement | null) => void;
   setTextRef12: (el: HTMLElement | null) => void;
   setTextRef13: (el: HTMLElement | null) => void;
-  arrowRef: React.RefObject<SVGSVGElement | null>;
+  arrowRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }: MobileContactCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileArrowHovered, setMobileArrowHovered] = useState(false);
   const faceRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -358,7 +390,12 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
         <span className="bento-text text-[var(--theme-text)] text-2xl" ref={setTextRef12}>
           Looking for me
         </span>
-        <div className="flex items-center cursor-pointer mt-auto group" onClick={openCard}>
+        <div
+          className="flex items-center cursor-pointer mt-auto group"
+          onClick={openCard}
+          onMouseEnter={() => setMobileArrowHovered(true)}
+          onMouseLeave={() => setMobileArrowHovered(false)}
+        >
           <span className="relative inline-block">
             <span className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif" ref={setTextRef13}>
               Contact Me
@@ -366,7 +403,11 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
             <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
           </span>
           <div className="overflow-hidden ml-1">
-            <ArrowUpRight ref={arrowRef} className="w-8 h-8 text-[var(--theme-text)]" />
+            <div ref={arrowRef}>
+              <AnimateIcon animate={mobileArrowHovered ? "default" : false}>
+                <ArrowUpRightAnimated className="w-6 h-6 text-[var(--theme-text)]" />
+              </AnimateIcon>
+            </div>
           </div>
         </div>
       </div>
@@ -394,11 +435,7 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
         >
           <Phone className="w-5 h-5 text-[var(--theme-text)]" />
         </div>
-        <div className={cn(cell, "col-span-2")} onClick={closeCard}>
-          <AnimateIcon animateOnHover="pointing-loop">
-            <ArrowLeft className="w-5 h-5 text-[var(--theme-text)]" />
-          </AnimateIcon>
-        </div>
+        <MobileBackCell cell={cell} onClick={closeCard} />
       </div>
     </div>
   );
