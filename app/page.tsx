@@ -1,33 +1,55 @@
 "use client";
 import Hero from "@/components/hero";
 import BentoGrid, { BentoGridHandle } from "@/components/bento-grid";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const ANIMATED_LAYOUT_QUERY = "(min-width: 1280px) and (min-height: 720px)";
 
 export default function Home() {
   const bentoGridRef = useRef<BentoGridHandle>(null);
+  const [canUseAnimatedLayout, setCanUseAnimatedLayout] = useState<
+    boolean | null
+  >(null);
 
-  const getHeroImageTarget = () => {
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(ANIMATED_LAYOUT_QUERY);
+    const updateLayoutMode = () => {
+      setCanUseAnimatedLayout(mediaQuery.matches);
+    };
+
+    updateLayoutMode();
+    mediaQuery.addEventListener("change", updateLayoutMode);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLayoutMode);
+    };
+  }, []);
+
+  const getHeroImageTarget = useCallback(() => {
     return bentoGridRef.current?.getHeroImageTarget() || null;
-  };
+  }, []);
 
-  const handleHeroImageMoved = () => {
+  const handleHeroImageMoved = useCallback(() => {
     // Trigger bento cards explosion when hero image starts moving
     bentoGridRef.current?.triggerExplosion();
-  };
+  }, []);
 
-  const handleAnimationComplete = () => {
-    // All animations done
-    console.log("All animations complete!");
-  };
+  const handleAnimationComplete = useCallback(() => {}, []);
+
+  if (canUseAnimatedLayout === null) {
+    return <div className="min-h-screen" style={{ backgroundColor: "var(--theme-bg)" }} />;
+  }
 
   return (
-    <div className="bg-[#3d2b1f] min-h-screen">
-      <BentoGrid ref={bentoGridRef} />
-      <Hero
-        getHeroImageTarget={getHeroImageTarget}
-        onHeroImageMoved={handleHeroImageMoved}
-        onAnimationComplete={handleAnimationComplete}
-      />
+    <div className="min-h-screen" style={{ backgroundColor: "var(--theme-bg)" }}>
+      <BentoGrid ref={bentoGridRef} animated={canUseAnimatedLayout} />
+      {canUseAnimatedLayout && (
+        <Hero
+          getHeroImageTarget={getHeroImageTarget}
+          onHeroImageMoved={handleHeroImageMoved}
+          onAnimationComplete={handleAnimationComplete}
+        />
+      )}
     </div>
   );
 }

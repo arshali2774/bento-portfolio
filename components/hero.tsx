@@ -81,12 +81,6 @@ export default function Hero({
         duration: 0.75,
         ease: "hop",
         delay: 0.75,
-      })
-      .to(overlayTextRef.current, {
-        y: "-8rem",
-        duration: 0.75,
-        ease: "hop",
-        delay: 0.75,
       });
     // Filter out the hero-img (index 2) to get non-hero images
     const nonHeroImgs = imgRefs.current.filter((_, index) => index !== 2);
@@ -223,7 +217,7 @@ export default function Hero({
         </div>
       </div>
       <div
-        className="hero-images absolute top-1/2 transform -translate-y-1/2 w-full py-8 flex justify-center gap-[10vw] will-change-[gap] z-30"
+        className="hero-images absolute top-1/2 transform -translate-y-1/2 w-full py-8 flex justify-center gap-[10vw] will-change-[gap] z-30 pointer-events-none"
         ref={heroImgRef}
       >
         <div
@@ -266,7 +260,7 @@ export default function Hero({
             fill
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-[#171511] mix-blend-color" />
+          <div className="absolute inset-0 mix-blend-color" style={{ backgroundColor: "var(--theme-text)" }} />
         </div>
         <div
           className="img relative w-[10vw] aspect-5/7 transform translate-y-1/2 scale-[0.5] [clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)] will-change-[transform,opacity,clip-path] opacity-0 overflow-hidden"
