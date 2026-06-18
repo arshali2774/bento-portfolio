@@ -1,8 +1,6 @@
 "use client";
 import Image from "next/image";
-import gsap from "gsap";
-import { CustomEase } from "gsap/CustomEase";
-import { SplitText } from "gsap/SplitText";
+import { gsap, SplitText } from "@/lib/gsap";
 import {
   useCallback,
   useLayoutEffect,
@@ -27,9 +25,7 @@ import {
   SiMongodb,
 } from "react-icons/si";
 import { ThemeCycler } from "@/components/ui/theme-cycler";
-
-gsap.registerPlugin(CustomEase, SplitText);
-CustomEase.create("hop", "0.85,0,0.15,1");
+import { cn } from "@/lib/utils";
 
 export interface BentoGridHandle {
   triggerExplosion: () => gsap.core.Timeline;
@@ -38,13 +34,11 @@ export interface BentoGridHandle {
 
 interface BentoGridProps {
   animated?: boolean;
+  onAboutClick?: () => void;
 }
 
-const cn = (...classes: Array<string | false | null | undefined>) =>
-  classes.filter(Boolean).join(" ");
-
 const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
-  ({ animated = true }, ref) => {
+  ({ animated = true, onAboutClick }, ref) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const heroImagePlaceholderRef = useRef<HTMLDivElement | null>(null);
     const cardRefs = useRef<HTMLDivElement[]>([]);
@@ -52,7 +46,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
     const arrowRef = useRef<HTMLDivElement | null>(null);
     const splitInstances = useRef<SplitText[]>([]);
     const iconRefs = useRef<HTMLElement[]>([]);
-    const pillRefs = useRef<HTMLDivElement[]>([]);
+    const pillRefs = useRef<HTMLElement[]>([]);
 
     const resetSplitText = useCallback(() => {
       splitInstances.current.forEach((split) => split.revert());
@@ -257,7 +251,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               if (el) cardRefs.current[1] = el;
             }}
           >
-            <span className="nav-link group">
+            <span className="nav-link group" onClick={() => onAboutClick?.()}>
               <span className="relative inline-block">
                 <span
                   className="bento-text text-[var(--theme-text)] text-2xl"
@@ -265,30 +259,20 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                     if (el) textRefs.current[1] = el;
                   }}
                 >
-                  Home
-                </span>
-                <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
-              </span>
-            </span>
-            <span className="nav-link group">
-              <span className="relative inline-block">
-                <span
-                  className="bento-text text-[var(--theme-text)] text-2xl"
-                  ref={(el) => {
-                    if (el) textRefs.current[2] = el;
-                  }}
-                >
                   About
                 </span>
                 <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </span>
             </span>
-            <span className="nav-link group">
+            <span
+              className="nav-link group"
+              onClick={() => window.open("https://github.com/arshali2774", "_blank", "noopener,noreferrer")}
+            >
               <span className="relative inline-block">
                 <span
                   className="bento-text text-[var(--theme-text)] text-2xl"
                   ref={(el) => {
-                    if (el) textRefs.current[3] = el;
+                    if (el) textRefs.current[2] = el;
                   }}
                 >
                   Work
@@ -322,6 +306,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               ref={(el) => {
                 if (el) cardRefs.current[2] = el;
               }}
+              onClick={() => window.open("https://drive.google.com/file/d/1hP_AxUP0y-69yIU5ZVpBbelyoJ6O3A2p/view?usp=drive_link", "_blank", "noopener,noreferrer")}
             >
               <span className="relative inline-block">
                 <span
@@ -585,7 +570,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                       if (el) textRefs.current[16] = el;
                     }}
                   >
-                    Project 1
+                    Project 2
                   </span>
                   <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
@@ -598,7 +583,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                       if (el) textRefs.current[17] = el;
                     }}
                   >
-                    Project 1
+                    Project 3
                   </span>
                   <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>
@@ -611,7 +596,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                       if (el) textRefs.current[18] = el;
                     }}
                   >
-                    Project 1
+                    Project 4
                   </span>
                   <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
                 </span>

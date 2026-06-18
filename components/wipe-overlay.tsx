@@ -1,11 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { CustomEase } from "gsap/CustomEase";
+import { gsap } from "@/lib/gsap";
 import { useTheme } from "./theme-provider";
-
-gsap.registerPlugin(CustomEase);
-CustomEase.create("hop", "0.85,0,0.15,1");
 
 // Hidden polygon (line at bottom of screen, not visible)
 const HIDDEN = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";

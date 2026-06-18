@@ -20,7 +20,7 @@ export function buildThemeScript(): string {
   if(!theme) return;
 
   var root=document.documentElement;
-  var names=["--theme-bg","--theme-card","--theme-text","--theme-text2"];
+  var names=["--theme-bg","--theme-card","--theme-text"];
   names.forEach(function(name,i){ root.style.setProperty(name,theme.colors[i]); });
   root.setAttribute("data-theme-index",String(current));
 })();`;

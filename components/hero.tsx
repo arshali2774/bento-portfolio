@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
-import gsap from "gsap";
-import { CustomEase } from "gsap/CustomEase";
-import { SplitText } from "gsap/SplitText";
+import { gsap, SplitText } from "@/lib/gsap";
 import { useEffect, useRef } from "react";
-gsap.registerPlugin(CustomEase, SplitText);
-CustomEase.create("hop", "0.85,0,0.15,1");
+
+const HERO_IMG_INDEX = 2;
 
 interface HeroProps {
   onAnimationComplete?: () => void;
@@ -21,7 +19,7 @@ export default function Hero({
   const counterRef = useRef<HTMLHeadingElement | null>(null);
   const headerRef = useRef<HTMLHeadingElement | null>(null);
   const overlayTextRef = useRef<HTMLDivElement | null>(null);
-  const imgRefs = useRef<HTMLDivElement[] | null>([]);
+  const imgRefs = useRef<HTMLDivElement[]>([]);
   const heroImgRef = useRef<HTMLDivElement | null>(null);
   const heroOverlayRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -32,7 +30,6 @@ export default function Hero({
       !overlayTextRef.current ||
       !heroImgRef.current ||
       !heroOverlayRef.current ||
-      !imgRefs.current ||
       imgRefs.current.length === 0
     )
       return;
@@ -83,8 +80,8 @@ export default function Hero({
         delay: 0.75,
       });
     // Filter out the hero-img (index 2) to get non-hero images
-    const nonHeroImgs = imgRefs.current.filter((_, index) => index !== 2);
-    const heroImg = imgRefs.current[2];
+    const nonHeroImgs = imgRefs.current.filter((_, index) => index !== HERO_IMG_INDEX);
+    const heroImg = imgRefs.current[HERO_IMG_INDEX];
 
     revealTl
       .to(imgRefs.current, {
@@ -162,7 +159,6 @@ export default function Hero({
               scale: 1,
               borderRadius: "1rem", // matches rounded-2xl
               duration: 1,
-              delay: 0,
               ease: "hop",
               onComplete: () => {
                 onAnimationComplete?.();

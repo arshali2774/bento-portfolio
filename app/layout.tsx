@@ -4,7 +4,6 @@ import {
   Outfit,
   Inter,
   Source_Code_Pro,
-  Karla,
   Limelight,
   Manufacturing_Consent,
 } from "next/font/google";
@@ -12,6 +11,7 @@ import "./globals.css";
 import { buildThemeScript } from "@/lib/theme-script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { WipeOverlay } from "@/components/wipe-overlay";
+import { Toaster } from "@/components/ui/sonner";
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -35,12 +35,6 @@ const inter = Inter({
 const sourceCodePro = Source_Code_Pro({
   subsets: ["latin"],
   variable: "--font-source-code-pro",
-  preload: true,
-});
-
-const karla = Karla({
-  subsets: ["latin"],
-  variable: "--font-karla",
   preload: true,
 });
 
@@ -84,11 +78,12 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body
-        className={`${instrumentSerif.variable} ${outfit.variable} ${inter.variable} ${sourceCodePro.variable} ${karla.variable} ${limelight.variable} ${manufacturingConsent.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${outfit.variable} ${inter.variable} ${sourceCodePro.variable} ${limelight.variable} ${manufacturingConsent.variable} antialiased`}
       >
         <ThemeProvider>
           <WipeOverlay />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

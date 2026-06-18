@@ -1,20 +1,15 @@
 "use client";
 
 import { useRef, useState, useLayoutEffect } from "react";
-import gsap from "gsap";
-import { CustomEase } from "gsap/CustomEase";
+import { gsap } from "@/lib/gsap";
+import { cn } from "@/lib/utils";
 import { Mail, Phone } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa";
+import { toast } from "sonner";
 import { ArrowLeft } from "@/components/animate-ui/icons/arrow-left";
 import { ArrowUpRight as ArrowUpRightAnimated } from "@/components/animate-ui/icons/arrow-up-right";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-
-gsap.registerPlugin(CustomEase);
-CustomEase.create("hop", "0.85,0,0.15,1");
-
-const cn = (...classes: Array<string | false | null | undefined>) =>
-  classes.filter(Boolean).join(" ");
 
 type LinkContact = { id: string; Icon: React.ComponentType<{ className?: string }>; href: string; action: "link" };
 type CopyContact = { id: string; Icon: React.ComponentType<{ className?: string }>; value: string; action: "copy" };
@@ -29,6 +24,7 @@ const CONTACTS: Contact[] = [
 
 const GAP = 8;   // px gap between sub-cards in open state
 const RADIUS = 14; // px border-radius per sub-card in open state
+const COPY_LABELS: Record<string, string> = { email: "Email copied", phone: "Phone copied" };
 
 function getSubCardBorderShadow(el: HTMLElement): string {
   const text = getComputedStyle(el).getPropertyValue("--theme-text").trim();
@@ -115,8 +111,12 @@ function DesktopContactCard({
   }, []);
 
   function handleContactClick(contact: Contact) {
-    if (contact.action === "link") window.open(contact.href, "_blank", "noopener,noreferrer");
-    else navigator.clipboard.writeText(contact.value);
+    if (contact.action === "link") {
+      window.open(contact.href, "_blank", "noopener,noreferrer");
+    } else {
+      navigator.clipboard.writeText(contact.value);
+      toast(COPY_LABELS[contact.id] ?? "Copied");
+    }
   }
 
   function handleOpen() {
@@ -285,7 +285,7 @@ function DesktopContactCard({
         className="absolute inset-0 p-6 flex flex-col justify-between"
       >
         <span
-          className="bento-text text-[var(--theme-text)] text-2xl"
+          className="bento-text text-[var(--theme-text)] text-2xl sm:text-3xl lg:text-4xl font-instrument-serif"
           ref={setTextRef12}
         >
           Looking for me
@@ -298,7 +298,7 @@ function DesktopContactCard({
         >
           <span className="relative inline-block">
             <span
-              className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif"
+              className="bento-text text-[var(--theme-text)] text-2xl"
               ref={setTextRef13}
             >
               Contact Me
@@ -387,7 +387,7 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
 
       {/* Face */}
       <div ref={faceRef} className="flex-1 flex flex-col justify-between">
-        <span className="bento-text text-[var(--theme-text)] text-2xl" ref={setTextRef12}>
+        <span className="bento-text text-[var(--theme-text)] text-2xl sm:text-3xl font-instrument-serif" ref={setTextRef12}>
           Looking for me
         </span>
         <div
@@ -397,7 +397,7 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
           onMouseLeave={() => setMobileArrowHovered(false)}
         >
           <span className="relative inline-block">
-            <span className="bento-text text-[var(--theme-text)] text-3xl font-instrument-serif" ref={setTextRef13}>
+            <span className="bento-text text-[var(--theme-text)] text-2xl" ref={setTextRef13}>
               Contact Me
             </span>
             <span aria-hidden="true" className="absolute bottom-0 left-0 h-px w-full bg-[var(--theme-text)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
@@ -419,10 +419,14 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
           <div
             key={contact.id}
             className={cell}
-            onClick={() => contact.action === "link"
-              ? window.open(contact.href, "_blank", "noopener,noreferrer")
-              : navigator.clipboard.writeText(contact.value)
-            }
+            onClick={() => {
+              if (contact.action === "link") {
+                window.open(contact.href, "_blank", "noopener,noreferrer");
+              } else {
+                navigator.clipboard.writeText(contact.value);
+                toast(COPY_LABELS[contact.id] ?? "Copied");
+              }
+            }}
           >
             <contact.Icon className="w-5 h-5 text-[var(--theme-text)]" />
           </div>
@@ -431,7 +435,10 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
         {/* Row 2: Phone + Back (same row) */}
         <div
           className={cell}
-          onClick={() => navigator.clipboard.writeText("+919956440846")}
+          onClick={() => {
+            navigator.clipboard.writeText((CONTACTS[3] as CopyContact).value);
+            toast("Phone copied");
+          }}
         >
           <Phone className="w-5 h-5 text-[var(--theme-text)]" />
         </div>
