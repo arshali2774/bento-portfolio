@@ -252,7 +252,7 @@ function DesktopContactCard({
             className="flex items-center justify-center bg-[var(--theme-card)] cursor-pointer"
           >
             <div ref={(el) => { iconRefs.current[i] = el; }} className="flex items-center justify-center">
-              <contact.Icon className="w-8 h-8 text-[var(--theme-text)]" />
+              <contact.Icon className="w-[var(--icon-size)] h-[var(--icon-size)] text-[var(--theme-text)]" />
             </div>
           </div>
         ))}
@@ -267,7 +267,7 @@ function DesktopContactCard({
         >
           <div ref={(el) => { iconRefs.current[4] = el; }} className="flex items-center justify-center">
             <AnimateIcon animate={backHovered ? "pointing-loop" : false} loop={backHovered} completeOnStop>
-              <ArrowLeft className="w-8 h-8 text-[var(--theme-text)]" />
+              <ArrowLeft className="w-[var(--icon-size)] h-[var(--icon-size)] text-[var(--theme-text)]" />
             </AnimateIcon>
           </div>
         </div>
@@ -285,10 +285,10 @@ function DesktopContactCard({
         className="absolute inset-0 p-6 flex flex-col justify-between"
       >
         <span
-          className="bento-text text-[var(--theme-text)] text-2xl sm:text-3xl lg:text-4xl font-instrument-serif"
+          className="bento-text text-[var(--theme-text)] [font-size:var(--text-q)]"
           ref={setTextRef12}
         >
-          Looking for me
+          Looking for me?
         </span>
         <div
           className="flex items-center cursor-pointer group"
@@ -298,7 +298,7 @@ function DesktopContactCard({
         >
           <span className="relative inline-block">
             <span
-              className="bento-text text-[var(--theme-text)] text-2xl"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-cta)] font-instrument-serif"
               ref={setTextRef13}
             >
               Contact Me
@@ -309,7 +309,7 @@ function DesktopContactCard({
             {/* GSAP animates this div (slide-up reveal); Framer Motion animates the SVG (hover) */}
             <div ref={arrowRef} className="translate-y-full">
               <AnimateIcon animate={arrowHovered ? "default" : false}>
-                <ArrowUpRightAnimated className="w-6 h-6 text-[var(--theme-text)]" />
+                <ArrowUpRightAnimated className="w-[var(--icon-size)] h-[var(--icon-size)] text-[var(--theme-text)]" />
               </AnimateIcon>
             </div>
           </div>
@@ -405,7 +405,7 @@ function MobileContactCard({ setCardRef, setTextRef12, setTextRef13, arrowRef }:
           <div className="overflow-hidden ml-1">
             <div ref={arrowRef}>
               <AnimateIcon animate={mobileArrowHovered ? "default" : false}>
-                <ArrowUpRightAnimated className="w-6 h-6 text-[var(--theme-text)]" />
+                <ArrowUpRightAnimated className="w-[var(--icon-size)] h-[var(--icon-size)] text-[var(--theme-text)]" />
               </AnimateIcon>
             </div>
           </div>

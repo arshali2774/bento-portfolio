@@ -8,6 +8,18 @@
   --light: #ffffff;
   --dark: #0f0f0f;
 
+  /* ── Fluid type scale (animated desktop: 1280px → 2560px) ──────────────────
+     Formula: clamp(min, slope·vw + intercept, max)
+     slope = (max_px − min_px) / 12.8   intercept = (2·min_px − max_px) / 16  */
+  --text-q:       clamp(0.875rem, 0.46875vw + 0.5rem, 1.25rem);   /* questions:     14 → 20 px */
+  --text-nav:     clamp(1.125rem, 0.46875vw + 0.75rem, 1.5rem);   /* nav / row-1:   18 → 24 px */
+  --text-display: clamp(2.25rem, 0.9375vw + 1.5rem, 3rem);        /* display words: 36 → 48 px */
+  --text-content: clamp(1rem, 1.25vw, 2rem);                      /* descriptions:  16 → 32 px */
+  --text-project: clamp(1.75rem, 0.9375vw + 1rem, 2.5rem);        /* project names: 28 → 40 px */
+  --text-cta:     clamp(1.25rem, 0.9375vw + 0.5rem, 2rem);        /* Contact Me:    20 → 32 px */
+  --text-skill:   clamp(0.875rem, 0.78125vw + 0.25rem, 1.5rem);   /* skill labels:  14 → 24 px */
+  --icon-size:    clamp(1.125rem, 1.09375vw + 0.25rem, 2rem);     /* all icons:     18 → 32 px */
+
   /* Theme engine defaults (overwritten before first paint by inline script) */
   --theme-bg:    #0d1117;
   --theme-card:  #161c27;

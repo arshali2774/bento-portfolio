@@ -9,8 +9,9 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 
 const IMG_W = 300;
 const IMG_H = 400;
-const PAD_OUTER = 55;
 const PAD_INNER = 32;
+// Matches bento-grid.tsx: p-8 (32px) at xl, p-[3.4375rem] (55px) at 2xl+
+const getPadOuter = () => (window.innerWidth >= 1536 ? 55 : 32);
 const TARGET_W = 880;
 const TEXT_COL_W = TARGET_W - PAD_INNER * 3 - IMG_W;
 const BLEED = 2;
@@ -46,7 +47,18 @@ function DesktopOverlay({ isOpen, onClose, getImageCardRect }: DesktopOverlayPro
   const paraRefs   = useRef<(HTMLParagraphElement | null)[]>([]);
   const backRef    = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
   const [backHovered, setBackHovered] = useState(false);
+  const [showScrollFade, setShowScrollFade] = useState(false);
+  const scrollListenerRef = useRef<(() => void) | null>(null);
+
+  function updateScrollFade() {
+    const el = textColRef.current;
+    if (!el) return;
+    const overflows = el.scrollHeight > el.clientHeight;
+    const atBottom  = el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
+    setShowScrollFade(overflows && !atBottom);
+  }
 
   const isAnimatingRef = useRef(false);
   const prevIsOpenRef  = useRef(false);
@@ -68,15 +80,16 @@ function DesktopOverlay({ isOpen, onClose, getImageCardRect }: DesktopOverlayPro
     const imgWrap = imgWrapRef.current;
     if (!rect || !panel || !dim) { isAnimatingRef.current = false; return; }
 
+    const padOuter       = getPadOuter();
     const measureH       = measureRef.current?.scrollHeight ?? 0;
     const contentDrivenH = measureH + PAD_INNER * 2 + 56;
-    const bentoBottom    = window.innerHeight - PAD_OUTER;
+    const bentoBottom    = window.innerHeight - padOuter;
     const minH           = IMG_H + PAD_INNER * 2 + 56;
     const rawH           = Math.max(minH, contentDrivenH, bentoBottom - rect.top);
     const rawTop         = bentoBottom - rawH;
-    const targetTop      = Math.max(PAD_OUTER, rawTop);
+    const targetTop      = Math.max(padOuter, rawTop);
     const TARGET_H       = bentoBottom - targetTop;
-    const targetLeft     = Math.max(PAD_OUTER, window.innerWidth - PAD_OUTER - TARGET_W);
+    const targetLeft     = Math.max(padOuter, window.innerWidth - padOuter - TARGET_W);
 
     const textEls = getTextEls();
 
@@ -85,7 +98,12 @@ function DesktopOverlay({ isOpen, onClose, getImageCardRect }: DesktopOverlayPro
     gsap.set(textEls, { opacity: 0, y: 14 });
     if (imgWrap) gsap.set(imgWrap, { position: "absolute", top: 0, left: 0, width: rect.width, height: rect.height, borderRadius: "0.875rem" });
 
-    const tl = gsap.timeline({ onComplete: () => { isAnimatingRef.current = false; } });
+    const tl = gsap.timeline({ onComplete: () => {
+      isAnimatingRef.current = false;
+      updateScrollFade();
+      scrollListenerRef.current = updateScrollFade;
+      textColRef.current?.addEventListener("scroll", updateScrollFade);
+    } });
     tl.to(dim,   { opacity: 1, duration: 0.4, ease: "power2.out" });
     tl.to(panel, { left: targetLeft, top: targetTop - BLEED, width: TARGET_W + BLEED, height: TARGET_H + BLEED * 2, borderRadius: "1.25rem", duration: 0.65, ease: "power2.inOut" }, 0.1);
     if (imgWrap) tl.to(imgWrap, { top: PAD_INNER, left: PAD_INNER, width: IMG_W, height: IMG_H, borderRadius: "0.75rem", duration: 0.65, ease: "power2.inOut" }, 0.1);
@@ -100,6 +118,13 @@ function DesktopOverlay({ isOpen, onClose, getImageCardRect }: DesktopOverlayPro
     const dim   = dimRef.current;
     const imgWrap = imgWrapRef.current;
     if (!rect || !panel || !dim) { isAnimatingRef.current = false; return; }
+
+    // tear down scroll listener and hide fade immediately on close
+    if (scrollListenerRef.current) {
+      textColRef.current?.removeEventListener("scroll", scrollListenerRef.current);
+      scrollListenerRef.current = null;
+    }
+    setShowScrollFade(false);
 
     const textEls = getTextEls();
     const tl = gsap.timeline({
@@ -145,12 +170,24 @@ function DesktopOverlay({ isOpen, onClose, getImageCardRect }: DesktopOverlayPro
           <div className="absolute inset-0 mix-blend-color" style={{ backgroundColor: "var(--theme-text)" }} />
         </div>
 
-        <div className="absolute flex flex-col gap-5" style={{ top: PAD_INNER, left: PAD_INNER + IMG_W + PAD_INNER, right: PAD_INNER, bottom: PAD_INNER + 48 }}>
+        <div ref={textColRef} onScroll={updateScrollFade} className="absolute flex flex-col gap-5 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ top: PAD_INNER, left: PAD_INNER + IMG_W + PAD_INNER, right: PAD_INNER, bottom: PAD_INNER + 48 }}>
           <p ref={titleRef} className="font-instrument-serif text-3xl text-[var(--theme-text)] flex-shrink-0">{TITLE}</p>
           {PARAGRAPHS.map((text, i) => (
             <p key={i} ref={(el) => { paraRefs.current[i] = el; }} className="text-base text-[var(--theme-text)]/75 leading-relaxed flex-shrink-0">{text}</p>
           ))}
         </div>
+
+        <div
+          className="pointer-events-none absolute transition-opacity duration-500 ease-in-out"
+          style={{
+            left: PAD_INNER + IMG_W + PAD_INNER,
+            right: PAD_INNER,
+            bottom: PAD_INNER + 48,
+            height: 72,
+            background: `linear-gradient(to bottom, transparent, var(--theme-card))`,
+            opacity: showScrollFade ? 1 : 0,
+          }}
+        />
 
         <div ref={backRef} className="absolute cursor-pointer rounded-full bg-[var(--theme-card)] p-2 flex items-center justify-center" style={{ bottom: PAD_INNER, left: PAD_INNER }} onClick={() => handleCloseRef.current()} onMouseEnter={() => setBackHovered(true)} onMouseLeave={() => setBackHovered(false)}>
           <AnimateIcon animate={backHovered ? "pointing-loop" : false} loop={backHovered} completeOnStop>

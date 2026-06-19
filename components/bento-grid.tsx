@@ -3,8 +3,10 @@ import Image from "next/image";
 import { gsap, SplitText } from "@/lib/gsap";
 import {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
+  useState,
   forwardRef,
   useImperativeHandle,
 } from "react";
@@ -34,11 +36,12 @@ export interface BentoGridHandle {
 
 interface BentoGridProps {
   animated?: boolean;
+  introCompleted?: boolean;
   onAboutClick?: () => void;
 }
 
 const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
-  ({ animated = true, onAboutClick }, ref) => {
+  ({ animated = true, introCompleted = false, onAboutClick }, ref) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const heroImagePlaceholderRef = useRef<HTMLDivElement | null>(null);
     const cardRefs = useRef<HTMLDivElement[]>([]);
@@ -47,6 +50,15 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
     const splitInstances = useRef<SplitText[]>([]);
     const iconRefs = useRef<HTMLElement[]>([]);
     const pillRefs = useRef<HTMLElement[]>([]);
+
+    const [isLargeViewport, setIsLargeViewport] = useState(false);
+    useEffect(() => {
+      const mq = window.matchMedia("(min-width: 1513px)");
+      setIsLargeViewport(mq.matches);
+      const handler = (e: MediaQueryListEvent) => setIsLargeViewport(e.matches);
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }, []);
 
     const resetSplitText = useCallback(() => {
       splitInstances.current.forEach((split) => split.revert());
@@ -167,6 +179,18 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
         return;
       }
 
+      // Intro already played — jump straight to final visible state
+      if (introCompleted) {
+        gsap.set(containerRef.current, { opacity: 1 });
+        textRefs.current.forEach((el) => {
+          if (el) gsap.set(el, { visibility: "visible" });
+        });
+        gsap.set(iconRefs.current.filter(Boolean), { opacity: 1, y: 0 });
+        gsap.set(pillRefs.current.filter(Boolean), { opacity: 1 });
+        if (arrowRef.current) gsap.set(arrowRef.current, { y: 0 });
+        return;
+      }
+
       setCardsToCenter();
       resetSplitText();
       gsap.set(iconRefs.current.filter(Boolean), { opacity: 0, y: 6 });
@@ -185,7 +209,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
       return () => {
         resetSplitText();
       };
-    }, [animated, resetSplitText, setCardsToCenter]);
+    }, [animated, introCompleted, resetSplitText, setCardsToCenter]);
 
     // Base card — all cards share this
     const card =
@@ -199,7 +223,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
         className={cn(
           "bento-container w-full",
           animated
-            ? "fixed inset-0 h-screen p-13.75 z-20 pointer-events-none opacity-0"
+            ? "fixed inset-0 h-screen p-8 2xl:p-[3.4375rem] z-20 pointer-events-none opacity-0"
             : "bento-static relative min-h-screen p-4 sm:p-6 opacity-100",
         )}
         style={{ backgroundColor: "var(--theme-bg)" }}
@@ -208,7 +232,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
           className={cn(
             "bento-grid w-full",
             animated
-              ? "h-full grid grid-cols-12 gap-8.5"
+              ? "h-full grid grid-cols-12 gap-5 2xl:gap-8.5"
               : "mx-auto flex max-w-2xl flex-col gap-4 sm:gap-5",
           )}
           style={
@@ -231,7 +255,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             }}
           >
             <span
-              className="bento-text text-[var(--theme-text)] text-5xl font-manufacturing-consent"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-display)] font-manufacturing-consent"
               ref={(el) => {
                 if (el) textRefs.current[0] = el;
               }}
@@ -254,7 +278,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             <span className="nav-link group" onClick={() => onAboutClick?.()}>
               <span className="relative inline-block">
                 <span
-                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  className="bento-text text-[var(--theme-text)] [font-size:var(--text-nav)]"
                   ref={(el) => {
                     if (el) textRefs.current[1] = el;
                   }}
@@ -270,7 +294,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             >
               <span className="relative inline-block">
                 <span
-                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  className="bento-text text-[var(--theme-text)] [font-size:var(--text-nav)]"
                   ref={(el) => {
                     if (el) textRefs.current[2] = el;
                   }}
@@ -310,7 +334,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             >
               <span className="relative inline-block">
                 <span
-                  className="bento-text text-[var(--theme-text)] text-2xl"
+                  className="bento-text text-[var(--theme-text)] [font-size:var(--text-nav)]"
                   ref={(el) => {
                     if (el) textRefs.current[4] = el;
                   }}
@@ -339,7 +363,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                 }}
                 className="flex items-center justify-center w-full h-full"
               >
-                <ThemeCycler size={animated ? 40 : 24} />
+                <ThemeCycler size={animated ? (isLargeViewport ? 28 : 20) : 24} />
               </span>
             </div>
           </div>
@@ -358,7 +382,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             }}
           >
             <span
-              className="bento-text text-[var(--theme-text)] text-2xl"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-q)]"
               ref={(el) => {
                 if (el) textRefs.current[5] = el;
               }}
@@ -367,7 +391,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             </span>
             <div className="text-[var(--theme-text)]">
               <p
-                className="bento-text text-5xl leading-tight font-limelight"
+                className="bento-text [font-size:var(--text-display)] leading-tight font-limelight"
                 ref={(el) => {
                   if (el) textRefs.current[6] = el;
                 }}
@@ -375,7 +399,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                 Exploring
               </p>
               <p
-                className="bento-text text-5xl leading-tight font-instrument-serif"
+                className="bento-text [font-size:var(--text-display)] leading-tight font-instrument-serif"
                 ref={(el) => {
                   if (el) textRefs.current[7] = el;
                 }}
@@ -383,7 +407,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                 Ideas
               </p>
               <p
-                className="bento-text text-5xl leading-tight font-inter"
+                className="bento-text [font-size:var(--text-display)] leading-tight font-inter"
                 ref={(el) => {
                   if (el) textRefs.current[8] = el;
                 }}
@@ -391,7 +415,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                 Building
               </p>
               <p
-                className="bento-text text-5xl leading-tight font-source-code-pro"
+                className="bento-text [font-size:var(--text-display)] leading-tight font-source-code-pro"
                 ref={(el) => {
                   if (el) textRefs.current[9] = el;
                 }}
@@ -434,18 +458,18 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
                   ref={(el) => {
                     if (el) pillRefs.current[i] = el;
                   }}
-                  className="skill-pill flex items-center gap-2 px-3 py-2 cursor-default border border-[var(--theme-text)]/8"
+                  className="skill-pill flex items-center gap-2 px-3 py-2 xl:gap-1 xl:px-2 xl:py-1 2xl:gap-2 2xl:px-3 2xl:py-2 cursor-default border border-[var(--theme-text)]/8"
                 >
                   <span
                     ref={(el) => {
                       if (el) iconRefs.current[i] = el as HTMLElement;
                     }}
-                    className="flex-shrink-0 inline-flex items-center"
+                    className="flex-shrink-0 inline-flex items-center [font-size:var(--icon-size)]"
                   >
-                    <Icon size={26} className="text-[var(--theme-text)]" />
+                    <Icon className="text-[var(--theme-text)]" />
                   </span>
                   <span
-                    className="bento-text text-[var(--theme-text)] text-2xl font-instrument-serif"
+                    className="bento-text text-[var(--theme-text)] [font-size:var(--text-skill)] font-instrument-serif"
                     ref={(el) => {
                       if (el) textRefs.current[idx] = el;
                     }}
@@ -456,7 +480,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               ))}
             </div>
             <span
-              className="bento-text text-[var(--theme-text)] text-2xl"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-q)]"
               ref={(el) => {
                 if (el) textRefs.current[23] = el;
               }}
@@ -474,14 +498,21 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             arrowRef={arrowRef}
           />
 
-          {/* Hero image placeholder (desktop) / photo card (mobile) — not interactive */}
-          {animated ? (
+          {/* Hero image placeholder (desktop first run) / photo card (mobile + after intro) */}
+          {animated && !introCompleted ? (
             <div
               className="col-start-10 col-span-3 row-span-3 rounded-2xl"
               ref={heroImagePlaceholderRef}
             />
           ) : (
-            <div className="bento-card relative min-h-96 overflow-hidden rounded-2xl bg-[var(--theme-card)] border border-[var(--theme-text)]/8">
+            <div
+              className={cn(
+                "relative overflow-hidden rounded-2xl bg-[var(--theme-card)] border border-[var(--theme-text)]/8",
+                animated && "col-start-10 col-span-3 row-span-3",
+                !animated && "bento-card min-h-96",
+              )}
+              ref={heroImagePlaceholderRef}
+            >
               <Image
                 src="/img_1.jpg"
                 alt="Arsh Ali"
@@ -510,7 +541,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             }}
           >
             <p
-              className="bento-text text-[var(--theme-text)] leading-relaxed font-instrument-serif text-3xl"
+              className="bento-text text-[var(--theme-text)] leading-relaxed font-instrument-serif [font-size:var(--text-content)]"
               ref={(el) => {
                 if (el) textRefs.current[24] = el;
               }}
@@ -520,7 +551,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               web experiences.
             </p>
             <span
-              className="bento-text text-[var(--theme-text)] text-2xl"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-q)]"
               ref={(el) => {
                 if (el) textRefs.current[25] = el;
               }}
@@ -541,7 +572,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             }}
           >
             <span
-              className="bento-text text-[var(--theme-text)] text-2xl"
+              className="bento-text text-[var(--theme-text)] [font-size:var(--text-q)]"
               ref={(el) => {
                 if (el) textRefs.current[14] = el;
               }}
@@ -552,7 +583,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               <div className="project-item cursor-pointer group">
                 <span className="relative inline-block">
                   <span
-                    className="bento-text text-3xl font-instrument-serif"
+                    className="bento-text [font-size:var(--text-project)] font-instrument-serif"
                     ref={(el) => {
                       if (el) textRefs.current[15] = el;
                     }}
@@ -565,7 +596,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               <div className="project-item cursor-pointer group">
                 <span className="relative inline-block">
                   <span
-                    className="bento-text text-3xl font-instrument-serif"
+                    className="bento-text [font-size:var(--text-project)] font-instrument-serif"
                     ref={(el) => {
                       if (el) textRefs.current[16] = el;
                     }}
@@ -578,7 +609,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               <div className="project-item cursor-pointer group">
                 <span className="relative inline-block">
                   <span
-                    className="bento-text text-3xl font-instrument-serif"
+                    className="bento-text [font-size:var(--text-project)] font-instrument-serif"
                     ref={(el) => {
                       if (el) textRefs.current[17] = el;
                     }}
@@ -591,7 +622,7 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
               <div className="project-item cursor-pointer group">
                 <span className="relative inline-block">
                   <span
-                    className="bento-text text-3xl font-instrument-serif"
+                    className="bento-text [font-size:var(--text-project)] font-instrument-serif"
                     ref={(el) => {
                       if (el) textRefs.current[18] = el;
                     }}

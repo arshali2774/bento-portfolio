@@ -10,6 +10,7 @@ export default function Home() {
   const bentoGridRef = useRef<BentoGridHandle>(null);
   const [canUseAnimatedLayout, setCanUseAnimatedLayout] = useState<boolean | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [introCompleted, setIntroCompleted] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(ANIMATED_LAYOUT_QUERY);
@@ -47,12 +48,14 @@ export default function Home() {
       <BentoGrid
         ref={bentoGridRef}
         animated={canUseAnimatedLayout}
+        introCompleted={introCompleted}
         onAboutClick={() => setAboutOpen(true)}
       />
-      {canUseAnimatedLayout && (
+      {canUseAnimatedLayout && !introCompleted && (
         <Hero
           getHeroImageTarget={getHeroImageTarget}
           onHeroImageMoved={handleHeroImageMoved}
+          onAnimationComplete={() => setIntroCompleted(true)}
         />
       )}
       <AboutOverlay
