@@ -11,19 +11,31 @@ export default function Home() {
   const [canUseAnimatedLayout, setCanUseAnimatedLayout] = useState<boolean | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [introCompleted, setIntroCompleted] = useState(false);
+  const STORAGE_KEY = "bento-intro-completed";
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(ANIMATED_LAYOUT_QUERY);
-    const updateLayoutMode = () => {
-      setCanUseAnimatedLayout(mediaQuery.matches);
-    };
+    const initiallyDesktop = mediaQuery.matches;
 
-    updateLayoutMode();
-    mediaQuery.addEventListener("change", updateLayoutMode);
+    if (initiallyDesktop) {
+      // Refreshed on desktop → always replay intro, clear any stored flag
+      sessionStorage.removeItem(STORAGE_KEY);
+    } else {
+      // Refreshed on mobile/tablet → honour stored flag so resize-back skips intro
+      if (sessionStorage.getItem(STORAGE_KEY) === "true") {
+        setIntroCompleted(true);
+      }
+    }
 
-    return () => {
-      mediaQuery.removeEventListener("change", updateLayoutMode);
-    };
+    setCanUseAnimatedLayout(initiallyDesktop);
+    const onChange = (e: MediaQueryListEvent) => setCanUseAnimatedLayout(e.matches);
+    mediaQuery.addEventListener("change", onChange);
+    return () => mediaQuery.removeEventListener("change", onChange);
+  }, []);
+
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem(STORAGE_KEY, "true");
+    setIntroCompleted(true);
   }, []);
 
   const getHeroImageTarget = useCallback(() => {
@@ -55,7 +67,7 @@ export default function Home() {
         <Hero
           getHeroImageTarget={getHeroImageTarget}
           onHeroImageMoved={handleHeroImageMoved}
-          onAnimationComplete={() => setIntroCompleted(true)}
+          onAnimationComplete={handleIntroComplete}
         />
       )}
       <AboutOverlay

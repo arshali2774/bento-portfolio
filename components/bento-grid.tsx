@@ -203,12 +203,12 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             wordsClass: "bento-word",
           });
           splitInstances.current.push(split);
+          if (split.words.length > 0) {
+            gsap.set(split.words, { y: "100%" });
+          }
         }
       });
 
-      return () => {
-        resetSplitText();
-      };
     }, [animated, introCompleted, resetSplitText, setCardsToCenter]);
 
     // Base card — all cards share this
@@ -237,7 +237,10 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
           )}
           style={
             animated
-              ? { gridTemplateRows: "0.6fr 1fr 1fr 1fr 1fr 1fr" }
+              ? {
+                  gridTemplateRows: "0.6fr 1fr 1fr 1fr 1fr 1fr",
+                  gridTemplateColumns: "repeat(11, 1fr) auto",
+                }
               : undefined
           }
         >
@@ -349,9 +352,9 @@ const BentoGrid = forwardRef<BentoGridHandle, BentoGridProps>(
             <div
               className={cn(
                 cardInteractive,
-                animated && "col-start-12 col-span-1 row-span-1 aspect-square",
+                animated && "col-start-12 col-span-1 row-span-1 h-full aspect-square",
                 "flex items-center justify-center",
-                !animated && "w-16 h-16 flex-shrink-0 self-center",
+                !animated && "w-16 aspect-square flex-shrink-0 self-center",
               )}
               ref={(el) => {
                 if (el) cardRefs.current[3] = el;

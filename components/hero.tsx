@@ -226,6 +226,8 @@ export default function Hero({
             src={"/img_3.jpg"}
             alt="Image 3"
             fill
+            priority
+            sizes="10vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#171511] mix-blend-color" />
@@ -240,6 +242,8 @@ export default function Hero({
             src={"/img_2.jpg"}
             alt="Image 2"
             fill
+            priority
+            sizes="10vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#171511] mix-blend-color" />
@@ -254,6 +258,8 @@ export default function Hero({
             src={"/img_1.jpg"}
             alt="Image 1"
             fill
+            priority
+            sizes="10vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 mix-blend-color" style={{ backgroundColor: "var(--theme-text)" }} />
@@ -268,6 +274,8 @@ export default function Hero({
             src={"/img_4.jpg"}
             alt="Image 4"
             fill
+            priority
+            sizes="10vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#171511] mix-blend-color" />
@@ -282,6 +290,8 @@ export default function Hero({
             src={"/img_5.jpg"}
             alt="Image 5"
             fill
+            priority
+            sizes="10vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#171511] mix-blend-color" />
